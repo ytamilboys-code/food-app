@@ -1,0 +1,7 @@
+{
+  "name": "Local Delivery (லோக்கல் டெலிவரி)",
+  "description": "A comprehensive local hyper-delivery platform connecting Customers, Shop Owners, and Delivery Partners with dual language support (Tamil & English).",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

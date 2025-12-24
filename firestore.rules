@@ -1,0 +1,35 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    /**
+     * Users Collection Security Rules:
+     * - A user can only access their own profile document.
+     * - "get" is allowed for the specific document if the ID matches the user's UID.
+     * - "list" is explicitly denied to prevent user enumeration or unauthorized data scraping.
+     * - "create" and "update" are allowed only if the document ID matches the authenticated user's UID.
+     */
+    match /users/{userId} {
+      // Allow a user to read their own specific document
+      allow get: if request.auth != null && request.auth.uid == userId;
+      
+      // Deny listing all users to protect user privacy
+      allow list: if false; 
+      
+      // Allow a user to create or update their own profile document
+      allow create, update: if request.auth != null && request.auth.uid == userId;
+      
+      // Deny deletion from the client side to prevent accidental account loss
+      allow delete: if false;
+    }
+
+    /**
+     * Default rule: Deny all other access by default for security.
+     * This ensures that no other collections (like orders, stores, or products) 
+     * are exposed until specific, secure rules are defined for them.
+     */
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
